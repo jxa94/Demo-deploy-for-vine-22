@@ -1,6 +1,6 @@
 22 VINES
 
-#Notice: Just a demo deploy for group project
+# Notice: Just a demo deploy for group project
 
 Group Memebers:  
  - Sadhika Huria  
