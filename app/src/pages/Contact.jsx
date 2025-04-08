@@ -1,55 +1,115 @@
 import Navbar from '../components/Navbar';
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useRef } from "react";
+import emailjs from '@emailjs/browser';
 
-const FAQ = () => {
+const ContactPage = () => {
+    const form = useRef();
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        message: "",
+    });
+    const [status, setStatus] = useState("");
 
-    const [openIndex, setOpenIndex] = useState(null);
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-    const faqs = [
-        { question: "What if the weather doesn't display?", answer: "If the webpage does not display the weather, please ensure that location access is granted and try uploading the photo again." },
-        { question: "Can I upload multiple plants in one photo?", answer: "It's recommended to upload one plant per photo. If there are multiple plants, the AI may misidentify the species or provide inaccurate health information." },
-        { question: "What image formats are supported?" , answer: "Currently, we support PNG, JPEG, JPG, WEBP, or GIF formats. Please ensure your image is in one of these formats before uploading." },
-        { question: "Does the website store my plant data?", answer: "Sorry, we don't have this function yet. The data will be deleted after you exit the analyze page." },
-        { question: "How often should I check my plant's health?", answer: "You can check as often as you'd like! However, we suggest uploading a new photo every 1–2 weeks or after any major change in appearance to monitor your plant's condition." }
-        
-        /* Add or edit questions and answers as needed */
-    ];
-    
-    const toggleAnswer = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-};
+    const sendEmail = (e) => {
+        e.preventDefault();
+        setStatus("Sending...");
+        emailjs.sendForm(
+            'service_0mr8xwn', // EmailJS service ID
+            'template_1yvows1', // EmailJS template ID
+            form.current,
+            'Zz315oB8jsXUxeCqK' // EmailJS Public key
+        )
+        .then((result) => {
+            setStatus("Message sent successfully!");
+            setFormData({ name: "", email: "", message: "" });
+            console.log(result.text);
+        }, (error) => {
+            setStatus("Failed to send message.");
+            console.log(error.text);
+        });
+    };
 
-return (
-    <div>
-        <Navbar />
-        <div className="max-w-[1240px] mx-auto p-6">
-            <h2 className="text-2xl font-bold text-center mb-6 ">Frequently Asked Questions</h2>
-            <div className="bg-white p-6 rounded-2xl shadow-lg mb-6">
-                {faqs.map((faq, index) => (
-                    <div key={index} className="p-4">
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold">{faq.question}</p>
-                            <button 
-                                className="bg-green-600 text-white px-4 py-2 rounded-md transition-all duration-300 hover:bg-green-700"
-                                onClick={() => toggleAnswer(index)}
-                            >
-                                {openIndex === index ? "Hide" : "Show"}
-                            </button>
+    return (
+        <div className="bg-gray-100">
+            <Navbar />
+            <div className="flex flex-col items-center justify-start px-6 py-10 max-w-[1240px] mx-auto">
+                <div className="bg-white p-8 rounded-2xl shadow-lg w-full">
+                    <h2 className="text-2xl font-bold text-center mb-4">Contact Us</h2>
+                    <p className="text-gray-600 text-center mb-6">Any questions or remarks? Just write us a message!</p>
+                    <form ref={form} onSubmit={sendEmail} className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4">
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="Enter a valid email address"
+                                    className="w-full border p-3 rounded-md bg-gray-100"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder="Enter your Name"
+                                    className="w-full border p-3 rounded-md bg-gray-100"
+                                    required
+                                />
+                            </div>
                         </div>
-
-                        {/* Sliding animation */}
-                        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${openIndex === index ? "max-h-40 opacity-100 mt-2" : "max-h-0 opacity-0"}`}>
-                            <p className="text-gray-600 mb-4">{faq.answer}</p>
+                        <div>
+                            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea
+                                id="message"
+                                name="message"
+                                value={formData.message}
+                                onChange={handleChange}
+                                placeholder="Enter your message"
+                                className="w-full border p-3 rounded-md bg-gray-100"
+                                rows="3"
+                                required
+                            />
                         </div>
-
-                        {index < faqs.length - 1 && <hr className="border-gray-300 my-6" />}
+                        <button type="submit" className="w-full bg-green-600 text-white py-3 rounded-md hover:bg-green-700 transition-colors font-medium">
+                            Submit
+                        </button>
+                    </form>
+                    {status && (
+                        <div className={`mt-4 p-3 rounded-md text-center ${status.includes("success") ? "bg-green-100 text-green-700" : status.includes("Failed") ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"}`}>
+                            {status}
+                        </div>
+                    )}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[1240px] w-full mt-10">
+                    <div className="bg-white p-6 rounded-lg shadow-md">
+                        <h3 className="font-bold text-lg mb-2">Anonymous</h3>
+                        <p className="text-gray-600">Very nicely designed application. Useful, would use myself.</p>
                     </div>
-                ))}
+                    <div className="bg-white p-6 rounded-lg shadow-md">
+                        <h3 className="font-bold text-lg mb-2">Nicole</h3>
+                        <p className="text-gray-600">Very nice application.</p>
+                    </div>
+                    <div className="bg-white p-6 rounded-lg shadow-md">
+                        <h3 className="font-bold text-lg mb-2">Peter Xu</h3>
+                        <p className="text-gray-600">I love this website, It saves my cactus</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
 };
 
-export default FAQ;
+export default ContactPage;
