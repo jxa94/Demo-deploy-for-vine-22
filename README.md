@@ -1,7 +1,5 @@
 22 VINES
 
-# Notice: Just a demo deploy for group project
-
 Group Memebers:  
  - Sadhika Huria  
  - Nathan Fassler  
@@ -96,3 +94,6 @@ https://nodejs.org/en/download
    ```
 
 5. Open your browser and navigate to `http://localhost:5173/` (Or the link it show on your Local) to view the application.
+
+
+
