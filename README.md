@@ -1,6 +1,8 @@
 22 VINES
 
-Group Memebers:  
+##Notice: Just a Demo for the project, not the original code.
+
+Group Members:  
  - Sadhika Huria  
  - Nathan Fassler  
  - Junhao Xu (Peter)  
